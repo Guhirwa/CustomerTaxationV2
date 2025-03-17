@@ -1,23 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import dao.TaxPayerDao;
-import java.util.Scanner;
 import model.TaxPayer;
+import java.util.List;
+import java.util.Scanner;
 
 /**
- *
- * @author jeremie
+ * Console-based application for managing tax payer records.
  */
 public class App {
     public static void main(String[] args) {
-        boolean condition = true;
         Scanner input = new Scanner(System.in);
-        while(condition){
+        TaxPayerDao dao = new TaxPayerDao();
+        boolean condition = true;
+
+        while (condition) {
             System.out.println("====================");
             System.out.println("  TAXATION SYSTEM ");
             System.out.println("====================");
@@ -25,67 +22,90 @@ public class App {
             System.out.println("2. Update Tax Payer");
             System.out.println("3. Delete Tax Payer");
             System.out.println("4. Search Tax Payer");
-            System.out.println("5. Find All Tax Payer");
+            System.out.println("5. Find All Tax Payers");
             System.out.println("0. Exit");
-            System.out.println("-----------");
             System.out.print("Enter Choice: ");
             int choice = input.nextInt();
-            String answer;
-            TaxPayer taxPayerObj = new TaxPayer();
-            TaxPayerDao dao = new TaxPayerDao();
-            String names;
-            String nid;
-            Double amount;
-            String tin;
-            switch(choice){
+
+            switch (choice) {
                 case 1:
                     System.out.print("Enter Names: ");
-                    names = input.next();
+                    input.nextLine();
+                    String names = input.nextLine();
                     System.out.print("Enter TIN: ");
-                    tin = input.next();
+                    String tin = input.next();
                     System.out.print("Enter NID: ");
-                    nid = input.next();
+                    String nid = input.next();
                     System.out.print("Enter Amount: ");
-                    amount = input.nextDouble();
-                    
-                    // set values to model
-                    taxPayerObj.setNames(names);
-                    taxPayerObj.setAmount(amount);
-                    taxPayerObj.setNid(nid);
-                    taxPayerObj.setTin(tin);
-                    
-                    int feedback = dao.createTaxPayer(taxPayerObj);
-                    if(feedback > 0){
-                        System.out.println("Data Created Successful");
-                    }else{
-                        System.out.println("Data not Inserted!!");
-                    }
-                    
-                    System.out.println("Do you wish to continue to use the system \n Enter Yes to continue and no to quit");
-                    answer = input.next();
-                    if(answer.equalsIgnoreCase("Yes")){
-                        condition = true;
-                    }else{
-                        System.out.println("Thank you for using the system");
-                        System.exit(0);
+                    Double amount = input.nextDouble();
+
+                    TaxPayer taxPayer = new TaxPayer(names, tin, nid, amount);
+                    if (dao.createTaxPayer(taxPayer) > 0) {
+                        System.out.println("Tax Payer added successfully!");
+                    } else {
+                        System.out.println("Failed to add tax payer.");
                     }
                     break;
+
+                case 2:
+                    System.out.print("Enter TIN to update: ");
+                    tin = input.next();
+                    TaxPayer existingTaxPayer = dao.searchTaxPayer(tin);
+
+                    if (existingTaxPayer != null) {
+                        System.out.print("Enter new Names: ");
+                        input.nextLine();
+                        names = input.nextLine();
+                        System.out.print("Enter new NID: ");
+                        nid = input.next();
+                        System.out.print("Enter new Amount: ");
+                        amount = input.nextDouble();
+
+                        existingTaxPayer.setNames(names);
+                        existingTaxPayer.setNid(nid);
+                        existingTaxPayer.setAmount(amount);
+
+                        if (dao.updateTaxPayer(existingTaxPayer) > 0) {
+                            System.out.println("Tax Payer updated successfully!");
+                        } else {
+                            System.out.println("Update failed.");
+                        }
+                    } else {
+                        System.out.println("Tax Payer not found.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter TIN to delete: ");
+                    tin = input.next();
+                    if (dao.deleteTaxPayer(tin) > 0) {
+                        System.out.println("Tax Payer deleted successfully.");
+                    } else {
+                        System.out.println("Deletion failed.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter TIN to search: ");
+                    tin = input.next();
+                    TaxPayer result = dao.searchTaxPayer(tin);
+                    System.out.println(result != null ? result : "Tax Payer not found.");
+                    break;
+
+                case 5:
+                    List<TaxPayer> taxPayers = dao.findAllTaxPayers();
+                    taxPayers.forEach(System.out::println);
+                    break;
+
                 case 0:
-                    System.out.println("Thank you for using the system");
-                    System.exit(0);
+                    System.out.println("Thank you for using the system!");
+                    condition = false;
                     break;
+
                 default:
-                    System.out.println("Wrong Choice!");
-                    System.out.println("Do you wish to continue to use the system \n Enter Yes to continue and no to quit");
-                    answer = input.next();
-                    if(answer.equalsIgnoreCase("Yes")){
-                        condition = true;
-                    }else{
-                        System.out.println("Thank you for using the system");
-                        System.exit(0);
-                    }
+                    System.out.println("Invalid choice!");
             }
-            
         }
+        input.close();
     }
 }

@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 /**
- *
- * @author jeremie
+ * Represents a tax payer model with properties and their getters/setters.
  */
 public class TaxPayer {
-    // Private variables
     private String names;
     private String tin;
     private String nid;
@@ -26,6 +19,7 @@ public class TaxPayer {
         this.amount = amount;
     }
 
+    // Getters and Setters
     public String getNames() {
         return names;
     }
@@ -57,7 +51,4 @@ public class TaxPayer {
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    
-    
-    
 }

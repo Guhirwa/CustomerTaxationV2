@@ -6,17 +6,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object (DAO) for managing tax payer operations in the database.
- */
 public class TaxPayerDao {
-    private final String dbUrl = "jdbc:postgresql://localhost:5432/taxation";
-    private final String dbUsername = "postgres";
-    private final String dbPassword = "postgres";
+    private final String dbUrl = "jdbc:mysql://localhost:3306/Taxation";
+    private final String dbUsername = "@Guhirwa";
+    private final String dbPassword = "@Guhirwa9188@";
 
     // Method to create a new tax payer  
     public int createTaxPayer(TaxPayer taxPayerObj) {
-        String query = "INSERT INTO tax_payer (tin, nid, names, amount) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO TaxPayer (tin, nid, name, amount) VALUES (?, ?, ?, ?)";
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query)) {
             pst.setString(1, taxPayerObj.getTin());
@@ -33,7 +30,7 @@ public class TaxPayerDao {
 
     // Method to update a tax payer  
     public int updateTaxPayer(TaxPayer taxPayer) {
-        String query = "UPDATE tax_payer SET names = ?, nid = ?, amount = ? WHERE tin = ?";
+        String query = "UPDATE TaxPayer SET name = ?, nid = ?, amount = ? WHERE tin = ?";
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query)) {
             pst.setString(1, taxPayer.getNames());
@@ -50,7 +47,7 @@ public class TaxPayerDao {
 
     // Method to delete a tax payer  
     public int deleteTaxPayer(String tin) {
-        String query = "DELETE FROM tax_payer WHERE tin = ?";
+        String query = "DELETE FROM TaxPayer WHERE tin = ?";
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query)) {
             pst.setString(1, tin);
@@ -63,19 +60,19 @@ public class TaxPayerDao {
 
     // Method to search for a specific tax payer  
     public TaxPayer searchTaxPayer(String tin) {
-        String query = "SELECT * FROM tax_payer WHERE tin = ?";
-        TaxPayer taxPayer = null;
+        String query = "SELECT * FROM TaxPayer WHERE tin = ?";
 
+        TaxPayer taxPayer = null;
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query)) {
-            pst.setString(1, tin);
+            pst.setString(1, String.valueOf(tin));
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
                 taxPayer = new TaxPayer();
                 taxPayer.setTin(rs.getString("tin"));
                 taxPayer.setNid(rs.getString("nid"));
-                taxPayer.setNames(rs.getString("names"));
+                taxPayer.setNames(rs.getString("name"));
                 taxPayer.setAmount(rs.getDouble("amount"));
             }
         } catch (SQLException ex) {
@@ -87,7 +84,7 @@ public class TaxPayerDao {
     // Method to retrieve all tax payers  
     public List<TaxPayer> findAllTaxPayers() {
         List<TaxPayer> taxPayers = new ArrayList<>();
-        String query = "SELECT * FROM tax_payer";
+        String query = "SELECT * FROM TaxPayer";
 
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query);
@@ -97,7 +94,7 @@ public class TaxPayerDao {
                 TaxPayer taxPayer = new TaxPayer();
                 taxPayer.setTin(rs.getString("tin"));
                 taxPayer.setNid(rs.getString("nid"));
-                taxPayer.setNames(rs.getString("names"));
+                taxPayer.setNames(rs.getString("name"));
                 taxPayer.setAmount(rs.getDouble("amount"));
                 taxPayers.add(taxPayer);
             }

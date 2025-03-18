@@ -1,8 +1,5 @@
 package model;
 
-/**
- * Represents a tax payer model with properties and their getters/setters.
- */
 public class TaxPayer {
     private String names;
     private String tin;

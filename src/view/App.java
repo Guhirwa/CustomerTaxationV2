@@ -5,9 +5,6 @@ import model.TaxPayer;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Console-based application for managing tax payer records.
- */
 public class App {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -50,7 +47,7 @@ public class App {
                 case 2:
                     System.out.print("Enter TIN to update: ");
                     tin = input.next();
-                    TaxPayer existingTaxPayer = dao.searchTaxPayer(tin);
+                    TaxPayer existingTaxPayer = dao.searchTaxPayer(taxPayer);
 
                     if (existingTaxPayer != null) {
                         System.out.print("Enter new Names: ");

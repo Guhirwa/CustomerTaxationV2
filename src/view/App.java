@@ -11,7 +11,7 @@ public class App {
         TaxPayerDao dao = new TaxPayerDao();
         boolean condition = true;
 
-        while (condition) {
+        do {
             System.out.println("====================");
             System.out.println("  TAXATION SYSTEM ");
             System.out.println("====================");
@@ -50,6 +50,13 @@ public class App {
                     TaxPayer existingTaxPayer = dao.searchTaxPayer(tin);
 
                     if (existingTaxPayer != null) {
+                        System.out.println("TAX PAYER INFORMATION");
+                        System.out.println("----------------------");
+                        System.out.println("TIN: " + existingTaxPayer.getTin());
+                        System.out.println("NID: " + existingTaxPayer.getNid());
+                        System.out.println("Names: " + existingTaxPayer.getNames());
+                        System.out.println("Amount: " + existingTaxPayer.getAmount());
+
                         System.out.print("Enter new Names: ");
                         input.nextLine();
                         names = input.nextLine();
@@ -62,8 +69,10 @@ public class App {
                         existingTaxPayer.setNid(nid);
                         existingTaxPayer.setAmount(amount);
 
-                        if (dao.updateTaxPayer(existingTaxPayer) > 0) {
+                        int rowsAffected = dao.updateTaxPayer(existingTaxPayer);
+                        if (rowsAffected > 0) {
                             System.out.println("Tax Payer updated successfully!");
+                            System.out.println();
                         } else {
                             System.out.println("Update failed.");
                         }
@@ -75,23 +84,50 @@ public class App {
                 case 3:
                     System.out.print("Enter TIN to delete: ");
                     tin = input.next();
-                    if (dao.deleteTaxPayer(tin) > 0) {
-                        System.out.println("Tax Payer deleted successfully.");
-                    } else {
-                        System.out.println("Deletion failed.");
+
+                    System.out.println("Are you sure you want to delete record? (y/n)");
+                    String responce = input.next();
+                    condition = responce.equalsIgnoreCase("y");
+
+                    if (condition) {
+                        if (dao.deleteTaxPayer(tin) > 0) {
+                            System.out.println("Tax Payer deleted successfully.");
+                        } else {
+                            System.out.println("Deletion failed.");
+                        }
+                        break;
                     }
-                    break;
 
                 case 4:
                     System.out.print("Enter TIN to search: ");
                     tin = input.next();
                     TaxPayer result = dao.searchTaxPayer(tin);
-                    System.out.println(result != null ? result : "Tax Payer not found.");
+                    if(result != null) {
+                        System.out.println("TAX PAYER INFORMATION");
+                        System.out.println("----------------------");
+                        System.out.println("TIN: " + result.getTin());
+                        System.out.println("NID: " + result.getNid());
+                        System.out.println("Names: " + result.getNames());
+                        System.out.println("Amount: " + result.getAmount());
+                    } else {
+                        System.out.println("Tax Payer not found");
+                    }
                     break;
 
                 case 5:
-                    List<TaxPayer> taxPayers = dao.findAllTaxPayers();
-                    taxPayers.forEach(System.out::println);
+                    int counter = 1;
+                        List<TaxPayer> taxPayerList = dao.findAllTaxPayers();
+                        for (TaxPayer taxPayer1 : taxPayerList) {
+                            System.out.println("TAX PAYER " + counter + " INFORMATION");
+                            System.out.println("----------------------");
+                            System.out.println("TIN: " + taxPayer1.getTin());
+                            System.out.println("NID: " + taxPayer1.getNid());
+                            System.out.println("Names: " + taxPayer1.getNames());
+                            System.out.println("Amount: " + taxPayer1.getAmount());
+                            System.out.println("");
+
+                            counter++;
+                        }
                     break;
 
                 case 0:
@@ -102,7 +138,10 @@ public class App {
                 default:
                     System.out.println("Invalid choice!");
             }
-        }
+            System.out.println("Do you wish to continue ? (yes/no)");
+            String choice2 = input.next();
+            condition = choice2.equalsIgnoreCase("yes");
+        } while(condition);
         input.close();
     }
 }

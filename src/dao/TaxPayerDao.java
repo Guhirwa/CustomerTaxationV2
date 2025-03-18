@@ -51,7 +51,9 @@ public class TaxPayerDao {
         try (Connection con = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement pst = con.prepareStatement(query)) {
             pst.setString(1, tin);
-            return pst.executeUpdate();
+            int rowAffected = pst.executeUpdate();
+            con.close();
+            return rowAffected;
         } catch (SQLException ex) {
             ex.printStackTrace();
             return 0;

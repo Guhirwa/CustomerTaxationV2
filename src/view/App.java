@@ -47,7 +47,7 @@ public class App {
                 case 2:
                     System.out.print("Enter TIN to update: ");
                     tin = input.next();
-                    TaxPayer existingTaxPayer = dao.searchTaxPayer(taxPayer);
+                    TaxPayer existingTaxPayer = dao.searchTaxPayer(tin);
 
                     if (existingTaxPayer != null) {
                         System.out.print("Enter new Names: ");
